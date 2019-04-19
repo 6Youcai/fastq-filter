@@ -1,18 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <zlib.h>
+#include <string>
 #include "kseq.h"
 #include "cmdline.h"
 // g++ -std=c++11 main.cpp -lz -o filter
 
 using namespace std;
-// declare the type of file handler and the read() function
-KSEQ_INIT(gzFile, gzread);
+KSEQ_INIT(gzFile, gzread)
 
 void write_seq(const kseq_t *seq, gzFile file) {
   gzputc(file, '@');
   gzputs(file, seq->name.s);
-  // some read has no comment.s
   if (seq->comment.s) {
     gzputc(file, ' ');
     gzputs(file, seq->comment.s);
@@ -26,7 +25,7 @@ void write_seq(const kseq_t *seq, gzFile file) {
 
 cmdline::parser parameter(int argc, char *argv[]) {
   cmdline::parser opt;
-  opt.add<string>("read1", '1', "input read1, compressed or not", true, "");
+  opt.add<string>("read1", '1', "input read1, compressed or not, must be Pherd33", true, "");
   opt.add<string>("read2", '2', "input read2, compressed or not", true, "");
   opt.add<string>("out1", '3', "out read1, compressed", true, "");
   opt.add<string>("out2", '4', "out read2, compressed", true, "");
@@ -35,19 +34,17 @@ cmdline::parser parameter(int argc, char *argv[]) {
   return opt;
 }
 
-int read_check(const kseq_t *seq) {
+int average_quality(const kseq_t *seq) {
   char *quality = seq->qual.s;
-  int Q, sumQ = 0;
+  int sumQ = 0;
   for (; *quality; quality++)
-    // hard code here
     sumQ += *quality - 33;
-  Q = sumQ / seq->seq.l;
-  return Q;
+  return sumQ / seq->seq.l;
 }
 
 bool pair_check(const kseq_t *seq1, const kseq_t *seq2, int Q) {
-  int q1 = read_check(seq1);
-  int q2 = read_check(seq2);
+  int q1 = average_quality(seq1);
+  int q2 = average_quality(seq2);
   if (q1 >= Q and q2 >= Q)
     return true;
   else
