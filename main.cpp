@@ -60,7 +60,7 @@ string get_umi(const kseq_t *read1, const kseq_t *read2, int start, int length, 
     string umi, sequence1, sequence2;
     sequence1 = read1->seq.s;
     sequence2 = read2->seq.s;
-    umi = sequence1.substr(start, length) + connect + sequence1.substr(start, length);
+    umi = sequence1.substr(start, length) + connect + sequence2.substr(start, length);
     return umi;
 }
 
