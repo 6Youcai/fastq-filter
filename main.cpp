@@ -48,6 +48,9 @@ string get_umi(const kseq_t *read1, const kseq_t *read2,
 
 void write_read(const kseq_t *read, gzFile file,
                 string umi, int start, int length) {
+    // inspired by chen
+    gzsetparams(file, 4, Z_DEFAULT_STRATEGY); // TODO set for level
+    gzbuffer(file, 1024*1024);
     gzputc(file, '@'); gzputs(file, read->name.s);
     if(umi.length()) {
         gzputc(file, ' '); gzputs(file, umi.c_str());
