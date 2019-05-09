@@ -4,7 +4,7 @@
 #include <string>
 #include "kseq.h"
 #include "cmdline.h"
-// g++ -std=c++11 main.cpp -lz
+// g++ -std=c++11 main.cpp -lz -o tony
 
 using namespace std;
 KSEQ_INIT(gzFile, gzread)
@@ -19,7 +19,7 @@ cmdline::parser parameter(int argc, char *argv[]) {
     opt.add("umi", '\0', "extract UMI sequence, default is NO.");
     opt.add<int>("umiStart", '\0', "start position(0 based) of UMI sequence, required for UMI.", false);
     opt.add<int>("umiLength", '\0', "UMI sequence length at one single read, required for UMI.", false);
-    opt.add<string>("connection", '\0', "the character between readsID and UMI, it can be space(S), colon(C), or underline(U), default is space",
+    opt.add<string>("connection", '\0', "the character between readsID and UMI, it can be space(S), colon(C), or underline(U), default is colon",
                  false, "C", cmdline::oneof<string>("S", "C", "U"));
     opt.add("disComment", '\0', "for disable reads's comment, default is NO.");
     opt.add<int>("readStart", '\0', "start position of real sequence, required for UMI.", false);
@@ -52,7 +52,7 @@ string get_umi(const kseq_t *read1, const kseq_t *read2,
 void write_read(const kseq_t *read, gzFile file,
                 bool add_comment, int level, char p,
                 string umi, int start, int length) {
-    // inspired by chen
+    // cpoy from chen
     gzsetparams(file, level, Z_DEFAULT_STRATEGY);
     gzbuffer(file, 1024*1024);
     gzputc(file, '@'); gzputs(file, read->name.s);
