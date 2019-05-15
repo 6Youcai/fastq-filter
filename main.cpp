@@ -4,7 +4,8 @@
 #include <string>
 #include "kseq.h"
 #include "cmdline.h"
-// g++ -std=c++11 main.cpp -lz -o tony
+
+// g++ -std=c++11 main.cpp -lz -o filter
 
 using namespace std;
 KSEQ_INIT(gzFile, gzread)
@@ -19,7 +20,7 @@ cmdline::parser parameter(int argc, char *argv[]) {
     opt.add("umi", '\0', "extract UMI sequence, default is NO.");
     opt.add<int>("umiStart", '\0', "start position(0 based) of UMI sequence, required for UMI.", false);
     opt.add<int>("umiLength", '\0', "UMI sequence length at one single read, required for UMI.", false);
-    opt.add<string>("connection", '\0', "the character between readsID and UMI, it can be space(S), colon(C), or underline(U), default is colon",
+    opt.add<string>("connection", '\0', "the character between readsID and UMI, it can be space(S), colon(C), or underline(U), default is space",
                  false, "C", cmdline::oneof<string>("S", "C", "U"));
     opt.add("disComment", '\0', "for disable reads's comment, default is NO.");
     opt.add<int>("readStart", '\0', "start position of real sequence, required for UMI.", false);
